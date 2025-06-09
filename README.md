@@ -38,9 +38,7 @@ A solução deve demonstrar o uso de:
 ### Fluxo Processar Score
 
 1. Endpoint
-   ```http
    POST /api/contacts/{id}/process-score
-````
 
 2. A rota dispatcha o job `ProcessContactScore` na fila contacts.
 
