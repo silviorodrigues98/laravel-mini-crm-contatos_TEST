@@ -74,12 +74,14 @@ A solução deve demonstrar o uso de:
 
 ## 3. Critérios de Avaliação
 
-| --------------------------------------------------------------- |
-| Uso correto de **Jobs, Events, Listeners e Observers**          |
-| **Broadcast** funcionando via Reverb                            |
-| Estrutura e organização do código (DDD, Service layer opcional) |
-| Qualidade dos **testes** e cobertura do fluxo principal         |
-| Clareza da documentação e **facilidade de setup**               |          
+| ✅ | Critério                                                                                                 |
+|----|----------------------------------------------------------------------------------------------------------|
+|    | Uso correto de **Jobs, Events, Listeners e Observers**                                                   |
+|    | **Broadcast** funcionando via Reverb                                                                     |
+|    | Estrutura e organização do código (DDD, Service layer opcional)                                          |
+|    | Qualidade dos **testes** e cobertura do fluxo principal                                                  |
+|    | Clareza da documentação e **facilidade de setup**                                                        |
+     
 
 ---
 
