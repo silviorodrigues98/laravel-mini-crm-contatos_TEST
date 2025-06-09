@@ -8,7 +8,17 @@ A solução deve demonstrar o uso de:
 - Jobs (dispatch + queue worker)  
 - Observers
 - Events & Listeners
-- Laravel Reverb (broadcasting em tempo real)  
+- Laravel Reverb (broadcasting em tempo real)
+
+A solução **deve** demonstrar o uso de:
+
+- CRUD completo (HTTP JSON)  
+- **Form Requests** para validação de entrada  
+- **API Resources** para serialização de saída  
+- **Jobs** (dispatch + queue worker)  
+- **Observers**  
+- **Events & Listeners**  
+- **Laravel Reverb** (broadcasting em tempo real)  
 
 
 ## 1. Escopo Funcional
@@ -61,26 +71,28 @@ A solução deve demonstrar o uso de:
 
 ## 2. Requisitos Técnicos
 
-| Área             | Detalhes                                                                                                                                       |
-| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Queues**       | Use **Redis**. <br/>Comando sugerido: <br/>`bash<br/>php artisan queue:work --queue=contacts<br/>`   |
-| **Reverb**       | Inicie com:<br/>`bash<br/>php artisan reverb:start<br/>`<br/>Disponibilize exemplo JS no README para ouvir o evento.                           |
-| **Observer**     | `ContactObserver`<br/>• `saving` → normalizar telefone (somente dígitos).<br/>• `created` → logar criação.                                     |
-| **Validação**    | Utilize **Form Requests** em **store** e **update**.                                                                                           |
-| **Autenticação** | Opcional – bônus se usar **Laravel Passport**.                                                                                                 |
-| **Documentação** | Este README deve explicar:<br/>• Setup (Laravel Sail ou Docker).<br/>• Como rodar worker e Reverb.<br/>• Exemplo de assinatura do canal em JS. |
+| Área               | Detalhes                                                                                                                                                                   |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Queues**         | Use **Redis**. <br/>Comando sugerido:<br/>`php artisan queue:work --queue=contacts`                                                  |
+| **Reverb**         | Inicie com:<br/>`php artisan reverb:start`<br/>Inclua no README um exemplo JavaScript de assinatura do canal.                      |
+| **Form Requests**  | Crie classes específicas para **store** e **update** garantindo validação centralizada.                                             |
+| **API Resources**  | Serialize todas as respostas JSON (inclusive erros) usando **Laravel Resource** / **Resource Collection**.                          |
+| **Observer**       | `ContactObserver`<br/>• `saving` → normalizar telefone (somente dígitos).<br/>• `created` → logar criação.                          |
+| **Autenticação**   | Opcional — bônus se utilizar **Laravel Passport**.                                                                                   |
+| **Documentação**   | Este README deve explicar:<br/>• Setup (Laravel Sail ou Docker).<br/>• Como rodar o worker e o Reverb.<br/>• Exemplo de escuta de canal em JS. |
 
 ---
 
 ## 3. Critérios de Avaliação
 
-| ✅ | Critério                                                                                                 |
-|----|----------------------------------------------------------------------------------------------------------|
-|    | Uso correto de **Jobs, Events, Listeners e Observers**                                                   |
-|    | **Broadcast** funcionando via Reverb                                                                     |
-|    | Estrutura e organização do código                                          |
-|    | Qualidade dos **testes** e cobertura do fluxo principal                                                  |
-|    | Clareza da documentação e **facilidade de setup**                                                        |
+| ✅ | Critério                                                                                         |
+|----|--------------------------------------------------------------------------------------------------|
+|    | Uso correto de **Form Requests** e **API Resources**                                             |
+|    | Emprego adequado de **Jobs, Events, Listeners e Observers**                                      |
+|    | **Broadcast** funcionando via Reverb                                                             |
+|    | Estrutura e organização do código                                                                |
+|    | Qualidade dos **testes** e cobertura do fluxo principal                                          |
+|    | Clareza da documentação e **facilidade de setup**      
      
 
 ---
