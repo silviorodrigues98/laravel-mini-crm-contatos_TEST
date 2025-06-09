@@ -94,8 +94,4 @@ A solução deve demonstrar o uso de:
 
 ---
 
-
-
 Boa sorte 🚀
-
-```
