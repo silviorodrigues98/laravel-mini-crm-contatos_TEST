@@ -89,7 +89,7 @@ A solução deve demonstrar o uso de:
 
 1. **Clone** este repositório e implemente sua solução.
 2. Faça *commit* em uma branch (`main` ou `develop`) e **publique**.
-3. Tempo sugerido: **1 SEMANA** (máx).
+3. Prazo de entrega: **1 SEMANA** (máx).
    Concentre-se em qualidade, não em escopo extra.
 
 ---
