@@ -1,17 +1,16 @@
 ````markdown
 # Desafio Técnico – Mini CRM de Contatos
 
-Construa uma pequena **API REST** em **Laravel** para gerenciar **contatos** e acompanhar, **em tempo real**, a evolução do **score** desses contatos quando um processamento assíncrono for executado.
+Construa uma pequena API REST em Laravel para gerenciar contatos e acompanhar, em tempo real, a evolução do score desses contatos quando um processamento assíncrono for executado.
 
-A solução **deve** demonstrar o uso de:
+A solução deve demonstrar o uso de:
 
 - CRUD completo (HTTP JSON)  
-- **Jobs** (dispatch + queue worker)  
-- **Observers**  
-- **Events & Listeners**  
-- **Laravel Reverb** (broadcasting em tempo real)  
+- Jobs (dispatch + queue worker)  
+- Observers
+- Events & Listeners
+- Laravel Reverb (broadcasting em tempo real)  
 
----
 
 ## 1. Escopo Funcional
 
@@ -37,18 +36,18 @@ A solução **deve** demonstrar o uso de:
 | PUT    | `/api/contacts/{id}`      | Atualizar contato        |
 | DELETE | `/api/contacts/{id}`      | Excluir contato (soft)   |
 
-### Fluxo **Processar Score**
+### Fluxo Processar Score
 
-1. **Endpoint**  
+1. Endpoint
    ```http
    POST /api/contacts/{id}/process-score
 ````
 
-2. A rota **dispatcha** o job `ProcessContactScore` na fila **contacts**.
+2. A rota dispatcha o job `ProcessContactScore` na fila contacts.
 
 3. O job (simule carga pesada com `sleep(2)` ou cálculo aleatório) deve:
 
-   * Atribuir um **score aleatório** entre **0 – 100**.
+   * Atribuir um score aleatório entre 0 – 100.
    * Atualizar `processed_at`.
    * Disparar o evento `ContactScoreProcessed`.
 
