@@ -2,14 +2,6 @@
 
 Construa uma pequena API REST em Laravel para gerenciar contatos e acompanhar, em tempo real, a evolução do score desses contatos quando um processamento assíncrono for executado.
 
-A solução deve demonstrar o uso de:
-
-- CRUD completo (HTTP JSON)  
-- Jobs (dispatch + queue worker)  
-- Observers
-- Events & Listeners
-- Laravel Reverb (broadcasting em tempo real)
-
 A solução **deve** demonstrar o uso de:
 
 - CRUD completo (HTTP JSON)  
