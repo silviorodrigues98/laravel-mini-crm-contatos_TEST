@@ -1,4 +1,4 @@
-# Desafio Técnico Sênior – Mini CRM de Contatos (DDD & TDD)
+# Desafio Técnico – Mini CRM de Contatos (DDD & TDD)
 
 Este desafio tem como objetivo avaliar suas habilidades avançadas em engenharia de software, design de arquitetura e fluência no ecossistema Laravel. 
 
