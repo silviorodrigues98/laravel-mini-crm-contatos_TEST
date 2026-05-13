@@ -4,10 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreContactRequest;
+use App\Http\Requests\UpdateContactRequest;
 use App\Http\Resources\ContactCollection;
 use App\Http\Resources\ContactResource;
 use Application\UseCases\CreateContactUseCase;
+use Application\UseCases\DeleteContactUseCase;
+use Application\UseCases\GetContactUseCase;
 use Application\UseCases\ListContactsUseCase;
+use Application\UseCases\UpdateContactUseCase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -16,6 +20,9 @@ class ContactController extends Controller
     public function __construct(
         private readonly CreateContactUseCase $createContact,
         private readonly ListContactsUseCase $listContacts,
+        private readonly GetContactUseCase $getContact,
+        private readonly UpdateContactUseCase $updateContact,
+        private readonly DeleteContactUseCase $deleteContact,
     ) {
     }
 
@@ -40,5 +47,37 @@ class ContactController extends Controller
         );
 
         return new ContactCollection($contacts);
+    }
+
+    public function show(int $id): JsonResponse
+    {
+        $contact = $this->getContact->execute($id);
+
+        if ($contact === null) {
+            return response()->json(['message' => 'Not Found'], 404);
+        }
+
+        return ContactResource::make($contact)->response();
+    }
+
+    public function update(UpdateContactRequest $request, int $id): JsonResponse
+    {
+        $data = $request->validated();
+
+        $contact = $this->updateContact->execute(
+            $id,
+            $data['name'],
+            $data['email'],
+            $data['phone'],
+        );
+
+        return ContactResource::make($contact)->response();
+    }
+
+    public function destroy(int $id): JsonResponse
+    {
+        $this->deleteContact->execute($id);
+
+        return response()->noContent();
     }
 }
