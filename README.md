@@ -1,99 +1,191 @@
-# Desafio Técnico – Mini CRM de Contatos (DDD & TDD)
+# Mini CRM de Contatos
 
-Este desafio tem como objetivo avaliar suas habilidades avançadas em engenharia de software, design de arquitetura e fluência no ecossistema Laravel. 
+API REST para gerenciamento de contatos com processamento assíncrono de score e atualizações em tempo real via WebSocket.
 
-Você deverá construir uma pequena API REST para gerenciar contatos e acompanhar, em tempo real, a evolução do **score** (pontuação) desses contatos quando um processamento assíncrono for executado.
+Construído como desafio técnico demonstrando **DDD**, **SOLID**, **TDD** e fluência no ecossistema Laravel.
 
-**O foco principal não é apenas entregar a funcionalidade, mas como você estrutura o código.** Esperamos ver a aplicação de **SOLID**, **Domain-Driven Design (DDD)** (ou Arquitetura Hexagonal/Clean Architecture) e **Test-Driven Development (TDD)**.
-
----
-
-## 1. Escopo Funcional
-
-### Modelo `Contact`
-
-| Campo          | Tipo               | Regras / Default                           |
-|----------------|--------------------|--------------------------------------------|
-| `id`           | bigint / PK        | auto-increment                             |
-| `name`         | string             | obrigatório                                |
-| `email`        | string único       | obrigatório \| formato e-mail              |
-| `phone`        | string             | obrigatório                                |
-| `score`        | integer            | default **0**                              |
-| `status`       | string (Enum)      | `pending`, `processing`, `active`, `failed`|
-| `processed_at` | timestamp nullable | preenchido após processamento do score     |
-| Timestamps     | `created_at`, `updated_at`, `deleted_at` (soft delete)            |
-
-### Endpoints CRUD
-
-| Método | Rota                      | Ação                     |
-|--------|---------------------------|--------------------------|
-| POST   | `/api/contacts`           | Criar contato (inicia como `pending` e score 0) |
-| GET    | `/api/contacts`           | Listar contatos (com paginação) |
-| GET    | `/api/contacts/{id}`      | Mostrar contato          |
-| PUT    | `/api/contacts/{id}`      | Atualizar contato        |
-| DELETE | `/api/contacts/{id}`      | Excluir contato (soft)   |
-
-### Fluxo de Processamento de Score (Regras de Negócio)
-
-1. **Endpoint de Gatilho**
-   `POST /api/contacts/{id}/process-score`
-
-2. **Processamento Assíncrono (Job)**
-   A rota deve enfileirar o processamento. O Job mudará o status do contato para `processing`.
-
-3. **Cálculo do Score (Domínio)**
-   O score não é aleatório. Ele deve ser calculado por um **Domain Service** ou **Use Case** isolado, baseado nas seguintes regras de negócio (utilize padrões como *Strategy* para permitir fácil extensão futura):
-   - **E-mail**: Domínios corporativos (não gmail, hotmail, yahoo) ganham +20 pontos. E-mails terminados em `.br` ganham +10 pontos.
-   - **Nome**: Nomes completos (com mais de uma palavra) ganham +10 pontos.
-   - **Telefone**: Se possuir código de área (DDD) válido do estado de São Paulo (11 a 19), ganha +20 pontos. Se for de outros estados, +10 pontos.
-   - *(A carga de cálculo pode ser simulada com um `sleep(1)` ou `sleep(2)` para emular demora e validar o fluxo assíncrono).*
-
-4. **Finalização**
-   - O status do contato passa para `active` (ou `failed` caso ocorra alguma falha na regra).
-   - O score calculado é salvo e a data em `processed_at` é preenchida.
-   - Um evento de domínio `ContactScoreProcessed` é disparado.
-
-5. **Reação ao Evento (Listeners & WebSockets)**
-   - **Log**: Um Listener grava no arquivo `storage/logs/contact.log` (ID, email, novo score, status).
-   - **Broadcast via Reverb**: A atualização do contato deve ser enviada para o frontend via websockets (canal `contacts.{id}`).
+> **Documento original do desafio:** [`docs/original/README.md`](docs/original/README.md)
 
 ---
 
-## 2. Requisitos Arquiteturais e Técnicos
+## Stack
 
-Esperamos que sua solução se afaste do padrão clássico MVC "fat-controller / fat-model" do Laravel e utilize conceitos de **DDD / Arquitetura Limpa**.
+| Camada     | Tecnologia                        |
+|------------|-----------------------------------|
+| Backend    | Laravel 11+                       |
+| Banco      | MySQL / SQLite                    |
+| Fila       | Redis                             |
+| WebSocket  | Laravel Reverb                    |
+| Testes     | PHPUnit (Feature + Unit)          |
 
-| Área | Requisito Esperado |
-| :--- | :--- |
-| **Domain Layer** | Suas regras de negócio (ex: cálculo do score, mudança de status) devem ser **agnósticas ao framework**. Utilize entidades ricas e *Value Objects* (ex: para Email, Phone, Status). |
-| **Application Layer** | Implemente *Use Cases* (ou *Actions*) para orquestrar as operações (ex: `CreateContactUseCase`, `CalculateScoreUseCase`). |
-| **Infrastructure Layer** | Aqui entram os recursos do Laravel: Controllers, Repositórios (Eloquent), Jobs, Events, Listeners e Requests. |
-| **Inversão de Dependência** | Utilize Interfaces para acoplar os *Use Cases* à infraestrutura (Repositories). Configure as dependências no *Service Container* do Laravel. |
-| **Validação e Saída** | Use **Form Requests** para validação de entrada (HTTP) e **API Resources** para padronizar o JSON de saída. |
-| **Queue & Broadcast** | Use **Redis** para a fila e **Laravel Reverb** para o WebSocket. Inclua um exemplo simples (HTML/JS) no `README` de como escutar o canal. |
+## Setup
+
+```bash
+# 1. Clonar
+git clone <repo-url>
+cd laravel-mini-crm-contatos
+
+# 2. Instalar dependências
+composer install
+
+# 3. Configurar ambiente
+cp .env.example .env
+# Ajuste DB_CONNECTION, REDIS_HOST, etc. conforme necessário
+
+# 4. Gerar chave
+php artisan key:generate
+
+# 5. Rodar migrations
+php artisan migrate
+
+# 6. (Opcional) Seed
+php artisan db:seed
+```
+
+## Arquitetura
+
+O projeto segue os princípios de **Domain-Driven Design** com separação em três camadas:
+
+```
+src/
+├── Domain/          # Entidades, Value Objects, interfaces de repositório
+│   ├── Entities/
+│   ├── ValueObjects/
+│   └── Repositories/
+├── Application/     # Use Cases / Actions
+│   └── UseCases/
+app/
+└── Infrastructure/  # Laravel: Controllers, Eloquent, Jobs, Events, Listeners
+    ├── Http/
+    │   ├── Controllers/
+    │   ├── Requests/
+    │   └── Resources/
+    ├── Repositories/
+    ├── Jobs/
+    ├── Events/
+    ├── Listeners/
+    └── Observers/
+```
+
+### Princípios
+
+- **Domain Layer** é 100% agnóstica ao framework — sem facades, sem ORM
+- **Use Cases** recebem interfaces de repositório por injeção de dependência
+- **Laravel Service Container** faz o binding das implementações concretas (Eloquent)
+- **Value Objects** para Email, Phone e Status (nunca strings cruas na entidade)
+- **Strategy Pattern** no cálculo do score para facilitar extensão
+- **Form Requests** para validação, **API Resources** para saída JSON
+- **Observer** para normalização do telefone no evento `saving`
+
+## Endpoints
+
+### Contatos (CRUD)
+
+| Método | Rota                  | Descrição                |
+|--------|-----------------------|--------------------------|
+| POST   | `/api/contacts`       | Criar contato            |
+| GET    | `/api/contacts`       | Listar contatos (paginado) |
+| GET    | `/api/contacts/{id}`  | Exibir contato           |
+| PUT    | `/api/contacts/{id}`  | Atualizar contato        |
+| DELETE | `/api/contacts/{id}`  | Excluir contato (soft)   |
+
+### Processamento de Score
+
+| Método | Rota                             | Descrição                              |
+|--------|----------------------------------|----------------------------------------|
+| POST   | `/api/contacts/{id}/process-score` | Dispara processamento assíncrono do score |
+
+### Regras de Cálculo do Score
+
+- **E-mail**: domínios corporativos (exceto gmail, hotmail, yahoo) → +20 pontos
+- **E-mail**: terminação `.br` → +10 pontos
+- **Nome**: mais de uma palavra → +10 pontos
+- **Telefone**: DDD de São Paulo (11–19) → +20 pontos
+- **Telefone**: DDD de outros estados → +10 pontos
+
+### Fluxo de Status
+
+```
+pending → processing → active (sucesso)
+                      → failed (falha)
+```
+
+## Testes
+
+```bash
+# Suite completa (Unit + Feature)
+php artisan test
+
+# Classe específica
+php artisan test --filter=NomeDaClasse
+
+# Método específico
+php artisan test --filter="nome_do_metodo"
+```
+
+## Fila (Redis)
+
+```bash
+# Processar a fila
+php artisan queue:work
+
+# Em ambiente de desenvolvimento com múltiplos jobs
+php artisan queue:work --tries=3
+```
+
+## WebSocket (Reverb)
+
+```bash
+# Iniciar servidor Reverb
+php artisan reverb:start
+```
+
+### Exemplo de escuta no frontend
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mini CRM — Listener</title>
+</head>
+<body>
+    <div id="status"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1/dist/echo.iife.js"></script>
+    <script>
+        const echo = new Echo({
+            broadcaster: 'reverb',
+            key: 'sua-chave',
+            wsHost: window.location.hostname,
+            wsPort: 8080,
+            forceTLS: false,
+            enabledTransports: ['ws', 'wss'],
+        });
+
+        const contactId = 1; // substituir pelo ID desejado
+        echo.channel(`contacts.${contactId}`)
+            .listen('ContactScoreProcessed', (e) => {
+                document.getElementById('status').innerHTML = `
+                    <p>Score atualizado: ${e.contact.score}</p>
+                    <p>Status: ${e.contact.status}</p>
+                `;
+            });
+    </script>
+</body>
+</html>
+```
+
+## Comandos Úteis
+
+| Ação                          | Comando                          |
+|-------------------------------|----------------------------------|
+| Migrar                        | `php artisan migrate`            |
+| Resetar banco + seed          | `php artisan migrate:fresh --seed` |
+| Processar fila                | `php artisan queue:work`         |
+| Iniciar Reverb                | `php artisan reverb:start`       |
+| Rodar testes                  | `php artisan test`               |
+| Cache de rotas                | `php artisan route:cache`        |
 
 ---
 
-## 3. Critérios de Avaliação
-
-Avaliaremos severamente a qualidade do seu código, não apenas se a API "funciona".
-
-| Peso | Critério                                                                                         |
-|------|--------------------------------------------------------------------------------------------------|
-| ⭐⭐⭐  | **Arquitetura & SOLID**: Separação clara entre Domínio, Aplicação e Infraestrutura. Correto uso de injeção de dependência e segregação de responsabilidades. |
-| ⭐⭐⭐  | **Testes (TDD)**: Seu histórico de commits deve preferencialmente demonstrar o ciclo red-green-refactor. Exigimos **Testes de Unidade** para a camada de Domínio/Aplicação (mockando infraestrutura) e **Testes de Integração (Feature)** para os endpoints e integração com banco/filas. |
-| ⭐⭐   | **Design de Código (Design Patterns)**: Uso adequado de padrões como *Strategy*, *Value Objects* e *Repository Pattern*. Entidades anêmicas custarão pontos. |
-| ⭐⭐   | **Fluência no Laravel**: Uso correto de Form Requests, API Resources, Jobs, Events/Listeners, Reverb e Observers (ex: `saving` para normalizar o formato do telefone). |
-| ⭐    | **Documentação & Setup**: Clareza no README.md ensinando a subir o ambiente (Laravel Sail ou Docker Compose customizado), rodar migrations, filas, websockets e rodar os testes. |
-
----
-
-## 4. Instruções de Entrega
-
-1. **Faça um fork/clone** deste repositório e inicie o desenvolvimento.
-2. Certifique-se de que os testes podem ser executados facilmente por quem for avaliar o teste (ex: `php artisan test`).
-3. Faça *commits* semânticos e granulares que demonstrem sua linha de raciocínio e a adoção do TDD.
-4. Quando finalizar, publique em um repositório seu (pode ser privado, basta nos dar acesso) e nos envie o link.
-5. **Prazo de entrega sugerido**: 7 dias. Foque na qualidade da arquitetura e dos testes, mesmo que o escopo funcional não esteja 100% polido.
-
-Boa sorte 🚀
+*Projeto baseado no desafio técnico descrito em [`docs/original/README.md`](docs/original/README.md).*
