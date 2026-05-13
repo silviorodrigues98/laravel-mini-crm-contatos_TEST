@@ -65,7 +65,7 @@
 **Plans:** 2 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Walking Skeleton: Environment, Domain Layer, Create + List Contacts
+- [x] 01-01-PLAN.md — Walking Skeleton: Environment, Domain Layer, Create + List Contacts
 - [ ] 01-02-PLAN.md — Complete CRUD: Show, Update, Delete + Feature Tests
 
 ### Phase 2: Score Processing
