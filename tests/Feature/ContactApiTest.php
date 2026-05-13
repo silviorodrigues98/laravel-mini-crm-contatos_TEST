@@ -98,4 +98,80 @@ class ContactApiTest extends TestCase
             'phone' => '11999999999',
         ]);
     }
+
+    public function test_can_show_a_contact(): void
+    {
+        $contact = Contact::factory()->create();
+
+        $response = $this->getJson(self::BASE_URL . '/' . $contact->id);
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('data.id', $contact->id);
+        $response->assertJsonPath('data.name', $contact->name);
+    }
+
+    public function test_show_returns_404_for_nonexistent_contact(): void
+    {
+        $response = $this->getJson(self::BASE_URL . '/999');
+
+        $response->assertStatus(404);
+    }
+
+    public function test_can_update_a_contact(): void
+    {
+        $contact = Contact::factory()->create();
+
+        $response = $this->putJson(self::BASE_URL . '/' . $contact->id, [
+            'name' => 'Updated Name',
+            'email' => 'updated@example.com',
+            'phone' => '21988887777',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('data.name', 'Updated Name');
+        $response->assertJsonPath('data.email', 'updated@example.com');
+        $response->assertJsonPath('data.phone', '21988887777');
+
+        $this->assertDatabaseHas('contacts', [
+            'id' => $contact->id,
+            'name' => 'Updated Name',
+            'email' => 'updated@example.com',
+        ]);
+    }
+
+    public function test_update_returns_validation_errors(): void
+    {
+        $contact = Contact::factory()->create();
+
+        $response = $this->putJson(self::BASE_URL . '/' . $contact->id, [
+            'name' => '',
+            'email' => 'not-an-email',
+            'phone' => '',
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['name', 'email', 'phone']);
+    }
+
+    public function test_can_soft_delete_a_contact(): void
+    {
+        $contact = Contact::factory()->create();
+
+        $response = $this->deleteJson(self::BASE_URL . '/' . $contact->id);
+
+        $response->assertStatus(204);
+
+        $this->assertSoftDeleted('contacts', ['id' => $contact->id]);
+        $this->assertDatabaseHas('contacts', ['id' => $contact->id]);
+    }
+
+    public function test_show_returns_404_after_delete(): void
+    {
+        $contact = Contact::factory()->create();
+        $contact->delete();
+
+        $response = $this->getJson(self::BASE_URL . '/' . $contact->id);
+
+        $response->assertStatus(404);
+    }
 }

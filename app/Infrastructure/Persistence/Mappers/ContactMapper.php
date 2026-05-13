@@ -36,6 +36,11 @@ final readonly class ContactMapper
         $model->score = $contact->score()->value;
         $model->status = $contact->status()->value;
 
+        if ($contact->id() !== null) {
+            $model->id = $contact->id();
+            $model->exists = true;
+        }
+
         if ($contact->processedAt() !== null) {
             $model->processed_at = $contact->processedAt()->format('Y-m-d H:i:s');
         }

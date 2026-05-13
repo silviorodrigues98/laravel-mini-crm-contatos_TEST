@@ -14,6 +14,7 @@ use Application\UseCases\ListContactsUseCase;
 use Application\UseCases\UpdateContactUseCase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ContactController extends Controller
 {
@@ -74,7 +75,7 @@ class ContactController extends Controller
         return ContactResource::make($contact)->response();
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(int $id): Response
     {
         $this->deleteContact->execute($id);
 
