@@ -62,6 +62,12 @@
 4. Soft deletes, timestamps working
 5. Feature tests for all CRUD endpoints pass
 
+**Plans:** 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Walking Skeleton: Environment, Domain Layer, Create + List Contacts
+- [ ] 01-02-PLAN.md — Complete CRUD: Show, Update, Delete + Feature Tests
+
 ### Phase 2: Score Processing
 **Goal:** Implement score calculation strategies, async job, processing trigger endpoint, and status machine.
 **Mode:** mvp
