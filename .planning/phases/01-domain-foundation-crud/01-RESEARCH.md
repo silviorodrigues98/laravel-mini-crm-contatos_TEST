@@ -1381,12 +1381,12 @@ Using `->only(...)` is explicit about what endpoints exist. The `apiResource` me
 
 **If this table is empty:** N/A — claims above tagged [ASSUMED] need user confirmation.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **PHP environment setup**
+1. **PHP environment setup** ✅ RESOLVED
    - What we know: PHP 8.3+ is not installed. Composer is not installed. Docker is not installed.
-   - What's unclear: What setup method the user prefers (native PHP install, Laravel Sail via Docker, or Laravel Herd).
-   - Recommendation: The planner should include a task to install PHP 8.3+ and Composer, or set up Laravel Sail. Default to native install for simplicity since the project will need Redis and Reverb later anyway. Flag to the user for confirmation.
+   - Decision: Native install chosen — install PHP 8.3+ via apt + Composer via official installer. Simpler than Docker/Sail for a CLI-driven project. Plan 01-01 Task 1 handles setup.
+   - Recommendation: Default to native install for simplicity since the project will need Redis and Reverb later anyway.
 
 2. **Email validation strictness in FormRequest**
    - What we know: `email:rfc,dns` validates format AND DNS domain existence.
