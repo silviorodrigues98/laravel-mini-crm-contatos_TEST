@@ -38,7 +38,7 @@ Contacts are created and their scores are calculated asynchronously with real-ti
 
 ## Context
 
-This is a technical assessment evaluating DDD, SOLID, TDD, Laravel ecosystem fluency, and design patterns. The README.md serves as the single source of truth for all requirements. The codebase already contains AGENTS.md with dev workflow and architecture notes.
+This is a technical assessment evaluating DDD, SOLID, TDD, Laravel ecosystem fluency, and design patterns. The original README (now in `docs/original/README.md`) is the spec that must be followed to the letter. The root `README.md` will be rewritten in Brazilian Portuguese documenting the actual project. The project must be easily reproducible by whoever is evaluating it.
 
 ## Constraints
 
@@ -59,6 +59,9 @@ This is a technical assessment evaluating DDD, SOLID, TDD, Laravel ecosystem flu
 | Repository pattern + DI | Inversion of dependency, testability | — Pending |
 | Redis for queue | Spec requires Redis | — Pending |
 | Reverb for WebSocket | Spec requires Laravel Reverb | — Pending |
+| Original spec preserved | `docs/original/README.md` — immutable source of truth | ✓ Good |
+| README em PT-BR | Root README documents the actual project in Brazilian Portuguese | — Pending |
+| Spec compliance | Every rule/endpoint/behavior from original spec must be implemented | — Pending |
 
 ## Evolution
 

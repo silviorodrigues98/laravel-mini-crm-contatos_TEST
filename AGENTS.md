@@ -73,7 +73,17 @@ Technology stack not yet documented. Will populate after codebase mapping or fir
 <!-- GSD:conventions-start source:CONVENTIONS.md -->
 ## Conventions
 
-Conventions not yet established. Will populate as patterns emerge during development.
+### Documentation
+
+- **Original spec**: `docs/original/README.md` — imutável. NÃO editar. É a fonte da verdade dos requisitos.
+- **Root README**: `README.md` — documenta o projeto real em português brasileiro. Deve conter instruções de setup, arquitetura, exemplos de uso, e como rodar testes/filas/reverb.
+- **Reprodutibilidade**: O projeto deve ser fácil de clonar, configurar e testar por quem for avaliar.
+
+### Spec Compliance
+
+- Toda regra de negócio do `docs/original/README.md` deve ser implementada.
+- Nenhum endpoint, comportamento, ou requisito arquitetural pode ser omitido.
+- Se algo no spec não estiver claro, preservar o comportamento descrito.
 <!-- GSD:conventions-end -->
 
 <!-- GSD:architecture-start source:ARCHITECTURE.md -->
