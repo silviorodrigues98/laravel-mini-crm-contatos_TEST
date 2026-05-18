@@ -2,23 +2,23 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-05-18T17:22:41.092Z"
+status: in_progress
+last_updated: "2026-05-18T15:20:00.000Z"
 progress:
   total_phases: 3
   completed_phases: 1
-  total_plans: 6
-  completed_plans: 2
-  percent: 33
+  total_plans: 4
+  completed_plans: 4
+  percent: 80
 ---
 
 # Project State
 
 ## Phase
 
-- **Current:** Phase 2 — Score Processing (RED phase in progress)
+- **Current:** Phase 2 — Score Processing (Plan 02-01 complete — RED+GREEN)
 - **Completed phases:** 1/3
-- **Next:** Phase 2 — Score Processing (Task 2 GREEN phase)
+- **Next:** Phase 2 — Score Processing (Plan 02-02: infrastructure wiring)
 
 ## Project Reference
 
@@ -30,8 +30,8 @@ See: .planning/PROJECT.md (updated 2026-05-12)
 ## Progress
 
 - Phases completed: 1/3
-- Requirements completed: 16/35
-- Current wave: In progress (02-01 RED phase — Task 1 complete)
+- Requirements completed: 24/35
+- Current wave: Completed (02-01 RED+GREEN — all tests pass)
 
 ## Decisions Log
 
@@ -40,9 +40,10 @@ See: .planning/PROJECT.md (updated 2026-05-12)
 | DDD layering | Phase 1 | Implemented |
 | Value Objects | Phase 1 | Implemented |
 | Repository pattern | Phase 1 | Implemented |
-| Strategy pattern | Phase 2 | RED phase complete (tests written) |
+| Strategy pattern | Phase 2 | Implemented |
 | Pure PHPUnit unit tests (no Laravel bootstrap) | Phase 2 | Implemented |
-| Phone DDD boundary: DDD < 11 invalid (0pts), DDD 11-19 SP (20pts), DDD 20+ other state (10pts) | Phase 2 | Decided |
+| Phone DDD boundary: DDD < 11 invalid (0pts), DDD 11-19 SP (20pts), DDD 20+ other state (10pts) | Phase 2 | Implemented |
+| ScoreCalculator non-final for mock compatibility | Phase 2 | Decided |
 
 ## Sessions
 
@@ -51,3 +52,4 @@ See: .planning/PROJECT.md (updated 2026-05-12)
 | 2026-05-12 | Phase 1 | Context gathered | `.planning/phases/01-domain-foundation-crud/01-CONTEXT.md` |
 | 2026-05-12 | Phase 1 | Execution completed | `.planning/phases/01-domain-foundation-crud/01-02-SUMMARY.md` |
 | 2026-05-18 | Phase 2 | 02-01 RED phase (Task 1 — failing tests) | `.planning/phases/02-score-processing/02-01-SUMMARY.md` |
+| 2026-05-18 | Phase 2 | 02-01 GREEN phase (Task 2 — implementation) | `.planning/phases/02-score-processing/02-01-SUMMARY.md` |

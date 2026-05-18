@@ -82,7 +82,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [/] 02-01-PLAN.md — Domain Scoring Layer: Strategies, Calculator, Use Case + Unit Tests (RED phase complete — Task 1 done)
+- [x] 02-01-PLAN.md — Domain Scoring Layer: Strategies, Calculator, Use Case + Unit Tests (RED+GREEN complete)
 - [ ] 02-02-PLAN.md — Infrastructure Wiring: Job, Endpoint, Routes, Provider + Feature Tests
 
 ### Phase 3: Events, Broadcasting & Polish
