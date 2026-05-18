@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateContactRequest;
 use App\Http\Resources\ContactCollection;
 use App\Http\Resources\ContactResource;
 use App\Infrastructure\Models\Contact as ContactModel;
+use App\Jobs\ProcessContactScoreJob;
 use Application\UseCases\CreateContactUseCase;
 use Application\UseCases\DeleteContactUseCase;
 use Application\UseCases\GetContactUseCase;
@@ -101,5 +102,21 @@ class ContactController extends Controller
         $this->deleteContact->execute($id);
 
         return response()->noContent();
+    }
+
+    public function processScore(int $id): JsonResponse
+    {
+        $contact = $this->getContact->execute($id);
+
+        if ($contact === null) {
+            return response()->json(['message' => 'Not Found'], 404);
+        }
+
+        ProcessContactScoreJob::dispatch($id);
+
+        return response()->json([
+            'message' => 'Score processing queued.',
+            'contact_id' => $id,
+        ], 202);
     }
 }
