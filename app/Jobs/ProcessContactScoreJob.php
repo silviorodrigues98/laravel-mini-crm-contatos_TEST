@@ -23,6 +23,23 @@ class ProcessContactScoreJob implements ShouldQueue
     public function handle(ProcessScoreUseCase $useCase): void
     {
         sleep(rand(1, 2));
-        $useCase->execute($this->contactId);
+
+        try {
+            $useCase->execute($this->contactId);
+        } catch (\Throwable $e) {
+            // Fallback: if execute() persisted "processing" but the
+            // terminal save failed, we must explicitly persist "failed"
+            // to prevent the contact from being stuck in "processing"
+            // permanently (CR-02).
+            try {
+                $useCase->markAsFailed($this->contactId);
+            } catch (\Throwable) {
+                // Secondary failure is unrecoverable — the contact may
+                // remain stuck in "processing". Logging is needed for
+                // operational visibility.
+            }
+
+            throw $e;
+        }
     }
 }

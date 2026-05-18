@@ -34,4 +34,22 @@ class ProcessScoreUseCase
 
         $this->repository->save($contact);
     }
+
+    /**
+     * Fallback: persist a failed status for a contact.
+     * Used by ProcessContactScoreJob when execute() throws after
+     * the processing state has already been persisted, to avoid
+     * leaving the contact permanently stuck in "processing".
+     */
+    public function markAsFailed(int $contactId): void
+    {
+        $contact = $this->repository->findById($contactId);
+
+        if ($contact === null) {
+            return;
+        }
+
+        $contact->markAsFailed();
+        $this->repository->save($contact);
+    }
 }
