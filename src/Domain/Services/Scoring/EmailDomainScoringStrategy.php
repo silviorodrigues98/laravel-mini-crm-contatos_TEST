@@ -12,9 +12,20 @@ final class EmailDomainScoringStrategy implements ScoreScoringStrategy
     {
         $points = 0;
 
-        $domainPrefix = explode('.', $contact->email()->domain())[0];
+        $parts = explode('.', $contact->email()->domain());
 
-        if (!in_array($domainPrefix, self::NON_CORPORATE_DOMAINS, true)) {
+        // Check if any domain segment matches a known non-corporate provider.
+        // This prevents subdomain bypass (e.g., sub.gmail.com → parts[0]='sub'
+        // would miss the check, but parts[1]='gmail' correctly matches).
+        $isNonCorporate = false;
+        foreach ($parts as $segment) {
+            if (in_array($segment, self::NON_CORPORATE_DOMAINS, true)) {
+                $isNonCorporate = true;
+                break;
+            }
+        }
+
+        if (!$isNonCorporate) {
             $points += 20;
         }
 
