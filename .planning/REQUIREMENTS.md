@@ -53,8 +53,8 @@
 ### Testing
 
 - [ ] **TEST-01**: Unit tests for Domain entities and value objects
-- [ ] **TEST-02**: Unit tests for Application use cases (mocking infrastructure)
-- [ ] **TEST-03**: Unit tests for score calculation strategies
+- [x] **TEST-02**: Unit tests for Application use cases (mocking infrastructure) — RED phase complete
+- [x] **TEST-03**: Unit tests for score calculation strategies — RED phase complete
 - [ ] **TEST-04**: Feature/integration tests for CRUD endpoints
 - [ ] **TEST-05**: Feature tests for score processing flow (including queue)
 - [ ] **TEST-06**: Full suite runs via `php artisan test`
@@ -112,9 +112,9 @@
 | ARCH-08 | Phase 1 | Pending |
 | ARCH-09 | Phase 1 | Pending |
 | ARCH-10 | Phase 1 | Pending |
-| TEST-01 | Phase 2 | Pending |
-| TEST-02 | Phase 2 | Pending |
-| TEST-03 | Phase 2 | Pending |
+| TEST-01 | Phase 2 | In Progress (tests written, implementation pending) |
+| TEST-02 | Phase 2 | In Progress (tests written, implementation pending) |
+| TEST-03 | Phase 2 | In Progress (tests written, implementation pending) |
 | TEST-04 | Phase 1 | Pending |
 | TEST-05 | Phase 2 | Pending |
 | TEST-06 | Phase 3 | Pending |
