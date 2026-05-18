@@ -9,7 +9,7 @@ use Domain\ValueObjects\Score;
 
 class Contact
 {
-    private ?int $id;
+    private ?int $id = null;
     private string $name;
     private Email $email;
     private Phone $phone;
@@ -31,6 +31,7 @@ class Contact
         }
 
         $contact = new self();
+        $contact->id = null;
         $contact->name = $name;
         $contact->email = $email;
         $contact->phone = $phone;
