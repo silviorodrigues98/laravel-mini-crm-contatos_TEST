@@ -60,6 +60,10 @@ class ScoreProcessingTest extends TestCase
             'status' => 'active',
             'score' => 50,
         ]);
+
+        $this->assertNotNull(
+            Contact::find($contact->id)->processed_at
+        );
     }
 
     public function test_score_processing_dispatches_contact_score_processed_event(): void
