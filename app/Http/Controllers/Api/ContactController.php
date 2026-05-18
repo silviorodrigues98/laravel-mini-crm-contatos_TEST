@@ -13,7 +13,7 @@ use Application\UseCases\DeleteContactUseCase;
 use Application\UseCases\GetContactUseCase;
 use Application\UseCases\ListContactsUseCase;
 use Application\UseCases\UpdateContactUseCase;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
