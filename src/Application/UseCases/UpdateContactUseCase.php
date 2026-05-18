@@ -14,12 +14,12 @@ class UpdateContactUseCase
     ) {
     }
 
-    public function execute(int $id, string $name, string $email, string $phone): Contact
+    public function execute(int $id, string $name, string $email, string $phone): ?Contact
     {
         $contact = $this->repository->findById($id);
 
         if ($contact === null) {
-            throw new \DomainException("Contact with ID {$id} not found.");
+            return null;
         }
 
         $contact->updateName($name);

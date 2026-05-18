@@ -87,6 +87,10 @@ class ContactController extends Controller
             $data['phone'],
         );
 
+        if ($contact === null) {
+            return response()->json(['message' => 'Not Found'], 404);
+        }
+
         return ContactResource::make($contact)->response();
     }
 
