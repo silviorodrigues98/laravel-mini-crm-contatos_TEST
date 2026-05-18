@@ -31,10 +31,12 @@ class ContactController extends Controller
 
     public function store(StoreContactRequest $request): JsonResponse
     {
+        $data = $request->validated();
+
         $contact = $this->createContact->execute(
-            $request->validated()['name'],
-            $request->validated()['email'],
-            $request->validated()['phone'],
+            $data['name'],
+            $data['email'],
+            $data['phone'],
         );
 
         return ContactResource::make($contact)
