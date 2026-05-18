@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class ProcessContactScoreJob implements ShouldQueue
 {
@@ -51,10 +52,18 @@ class ProcessContactScoreJob implements ShouldQueue
             // permanently (CR-02).
             try {
                 $useCase->markAsFailed($this->contactId);
-            } catch (\Throwable) {
+            } catch (\Throwable $inner) {
                 // Secondary failure is unrecoverable — the contact may
                 // remain stuck in "processing". Logging is needed for
                 // operational visibility.
+                Log::channel('contact')->error(
+                    'Failed to mark contact as failed after processing error',
+                    [
+                        'contact_id' => $this->contactId,
+                        'original_error' => $e->getMessage(),
+                        'fallback_error' => $inner->getMessage(),
+                    ]
+                );
             }
 
             // Permanent conditions (deleted contact, already processed)
