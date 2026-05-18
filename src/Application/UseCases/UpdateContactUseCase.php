@@ -14,7 +14,7 @@ class UpdateContactUseCase
     ) {
     }
 
-    public function execute(int $id, string $name, string $email, string $phone): ?Contact
+    public function execute(int $id, ?string $name = null, ?string $email = null, ?string $phone = null): ?Contact
     {
         $contact = $this->repository->findById($id);
 
