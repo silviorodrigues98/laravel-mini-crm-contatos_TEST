@@ -26,6 +26,10 @@ class Contact
 
     public static function create(string $name, Email $email, Phone $phone): self
     {
+        if (trim($name) === '') {
+            throw new \InvalidArgumentException('Contact name cannot be empty.');
+        }
+
         $contact = new self();
         $contact->name = $name;
         $contact->email = $email;
@@ -133,6 +137,10 @@ class Contact
 
     public function updateName(string $name): void
     {
+        if (trim($name) === '') {
+            throw new \InvalidArgumentException('Contact name cannot be empty.');
+        }
+
         $this->name = $name;
         $this->touch();
     }
