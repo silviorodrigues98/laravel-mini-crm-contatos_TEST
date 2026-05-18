@@ -5,8 +5,8 @@
 | # | Phase | Goal | Requirements | Success Criteria |
 |---|-------|------|--------------|------------------|
 | 1 | Domain Foundation & CRUD | Implement core domain entities, VOs, repository interfaces, migrations, and full CRUD endpoints | CONT-01–05, ARCH-01–10, TEST-04 | 7 |
-| 2 | Score Processing | Implement async score calculation with Strategy pattern, queue job, and processing trigger | SCORE-01–06, CALC-01–05, TEST-01–03, TEST-05 | 9 |
-| 3 | Events, Broadcasting & Polish | Implement domain events, log listener, Reverb broadcast, HTML example, and final test suite wiring | EVENT-01–04, TEST-06 | 5 |
+| 2 | Score Processing | Implement async score calculation with Strategy pattern, queue job, and processing trigger | SCORE-01–06, CALC-01–05, TEST-01–03, TEST-05 | 5 |
+| 3 | Events, Broadcasting & Polish | Implement domain events, log listener, Reverb broadcast, HTML example, and final test suite wiring | EVENT-01–04, ARCH-08, TEST-06 | 6 |
 
 ---
 
@@ -79,12 +79,29 @@ Plans:
 4. Strategy pattern extensibility
 5. Unit tests for strategies and use cases pass
 
-**Plans:** 3 plans
+**Plans:** 2 plans
 
 Plans:
 - [x] 02-01-PLAN.md — Domain Scoring Layer: Strategies, Calculator, Use Case + Unit Tests (RED+GREEN complete)
 - [x] 02-02-PLAN.md — Infrastructure Wiring: Job, Endpoint, Routes, Provider + Feature Tests
-- [ ] 02-03-PLAN.md — Events, Broadcasting & Reverb Integration
+
+### Phase 3: Events, Broadcasting & Polish
+**Goal:** Wire domain events, log listener, Reverb broadcast, HTML/JS example, and finalize test suite.
+**Mode:** mvp
+**Requirements:** EVENT-01, EVENT-02, EVENT-03, EVENT-04, ARCH-08, TEST-06
+**Success criteria:**
+1. Domain event dispatched on score completion
+2. Log file written correctly
+3. Reverb broadcast working
+4. HTML/JS example in README
+5. Full test suite passes
+6. Observer normalizes phone on `saving`
+
+**Plans:** 2 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Event Broadcasting Pipeline: Reverb, Event, Listener, Use Case + Job Modifications
+- [ ] 03-02-PLAN.md — Tests & Documentation: Event Tests, Observer Tests, README, Full Suite
 
 ### Phase 3: Events, Broadcasting & Polish
 **Goal:** Wire domain events, log listener, Reverb broadcast, HTML/JS example, and finalize test suite.
