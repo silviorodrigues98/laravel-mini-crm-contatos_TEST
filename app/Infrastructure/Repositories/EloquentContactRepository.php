@@ -6,6 +6,7 @@ use App\Infrastructure\Models\Contact as ContactModel;
 use App\Infrastructure\Persistence\Mappers\ContactMapper;
 use Domain\Entities\Contact;
 use Domain\Repositories\ContactRepositoryInterface;
+use Domain\ValueObjects\PaginatedResult;
 
 class EloquentContactRepository implements ContactRepositoryInterface
 {
@@ -38,14 +39,20 @@ class EloquentContactRepository implements ContactRepositoryInterface
         return $this->mapper->toDomain($model);
     }
 
-    /** @return Contact[] */
-    public function findAll(int $perPage = 15, int $page = 1): array
+    public function findAll(int $perPage = 15, int $page = 1): PaginatedResult
     {
         $paginator = $this->model->newQuery()->paginate(perPage: $perPage, page: $page);
 
-        return collect($paginator->items())
+        $items = collect($paginator->items())
             ->map(fn (ContactModel $model) => $this->mapper->toDomain($model))
             ->toArray();
+
+        return new PaginatedResult(
+            items: $items,
+            total: $paginator->total(),
+            perPage: $paginator->perPage(),
+            page: $paginator->currentPage(),
+        );
     }
 
     public function delete(int $id): void

@@ -2,8 +2,8 @@
 
 namespace Application\UseCases;
 
-use Domain\Entities\Contact;
 use Domain\Repositories\ContactRepositoryInterface;
+use Domain\ValueObjects\PaginatedResult;
 
 class ListContactsUseCase
 {
@@ -12,8 +12,7 @@ class ListContactsUseCase
     ) {
     }
 
-    /** @return Contact[] */
-    public function execute(int $perPage = 15, int $page = 1): array
+    public function execute(int $perPage = 15, int $page = 1): PaginatedResult
     {
         return $this->repository->findAll($perPage, $page);
     }

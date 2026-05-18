@@ -7,7 +7,6 @@ use App\Http\Requests\StoreContactRequest;
 use App\Http\Requests\UpdateContactRequest;
 use App\Http\Resources\ContactCollection;
 use App\Http\Resources\ContactResource;
-use App\Infrastructure\Models\Contact as ContactModel;
 use App\Jobs\ProcessContactScoreJob;
 use Application\UseCases\CreateContactUseCase;
 use Application\UseCases\DeleteContactUseCase;
@@ -50,18 +49,16 @@ class ContactController extends Controller
         $perPage = $request->integer('per_page', 15);
         $page = $request->integer('page', 1);
 
-        $contacts = $this->listContacts->execute(
+        $result = $this->listContacts->execute(
             perPage: $perPage,
             page: $page,
         );
 
-        $total = ContactModel::count();
-
         $paginator = new LengthAwarePaginator(
-            $contacts,
-            $total,
-            $perPage,
-            $page,
+            $result->items,
+            $result->total,
+            $result->perPage,
+            $result->page,
             ['path' => LengthAwarePaginator::resolveCurrentPath()]
         );
 
