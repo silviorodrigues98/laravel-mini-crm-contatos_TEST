@@ -178,6 +178,7 @@ class Contact
     {
         $this->assertTransition(ContactStatus::Failed);
         $this->status = ContactStatus::Failed;
+        $this->score = Score::zero();
         $this->processedAt = new \DateTimeImmutable();
         $this->touch();
     }
