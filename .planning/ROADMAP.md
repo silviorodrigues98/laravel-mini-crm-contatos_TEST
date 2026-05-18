@@ -79,11 +79,12 @@ Plans:
 4. Strategy pattern extensibility
 5. Unit tests for strategies and use cases pass
 
-**Plans:** 2 plans
+**Plans:** 3 plans
 
 Plans:
 - [x] 02-01-PLAN.md — Domain Scoring Layer: Strategies, Calculator, Use Case + Unit Tests (RED+GREEN complete)
-- [ ] 02-02-PLAN.md — Infrastructure Wiring: Job, Endpoint, Routes, Provider + Feature Tests
+- [x] 02-02-PLAN.md — Infrastructure Wiring: Job, Endpoint, Routes, Provider + Feature Tests
+- [ ] 02-03-PLAN.md — Events, Broadcasting & Reverb Integration
 
 ### Phase 3: Events, Broadcasting & Polish
 **Goal:** Wire domain events, log listener, Reverb broadcast, HTML/JS example, and finalize test suite.
