@@ -13,11 +13,21 @@ class ProcessContactScoreJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $tries = 1;
+    public int $tries = 3;
+    public int $maxExceptions = 2;
 
     public function __construct(
         public readonly int $contactId,
     ) {
+    }
+
+    /**
+     * Seconds to wait between retry attempts.
+     * Provides exponential backoff for transient failures.
+     */
+    public function backoff(): array
+    {
+        return [2, 5, 15];
     }
 
     public function handle(ProcessScoreUseCase $useCase): void
