@@ -2,6 +2,5 @@
 
 use Illuminate\Support\Facades\Broadcast;
 
-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
-});
+// No auth needed -- using public channels (no PrivateChannel).
+// All channel authorization is handled by the event's broadcastOn().

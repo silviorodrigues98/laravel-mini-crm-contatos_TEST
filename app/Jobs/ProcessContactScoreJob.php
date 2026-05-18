@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\ContactScoreProcessed;
 use Application\UseCases\ProcessScoreUseCase;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -35,7 +36,14 @@ class ProcessContactScoreJob implements ShouldQueue
         sleep(rand(1, 2));
 
         try {
-            $useCase->execute($this->contactId);
+            $contact = $useCase->execute($this->contactId);
+
+            event(new ContactScoreProcessed(
+                contactId: $contact->id(),
+                email: $contact->email()->value,
+                score: $contact->score()->value,
+                status: $contact->status()->value,
+            ));
         } catch (\Throwable $e) {
             // Fallback: if execute() persisted "processing" but the
             // terminal save failed, we must explicitly persist "failed"
@@ -47,6 +55,16 @@ class ProcessContactScoreJob implements ShouldQueue
                 // Secondary failure is unrecoverable — the contact may
                 // remain stuck in "processing". Logging is needed for
                 // operational visibility.
+            }
+
+            // Permanent conditions (deleted contact, already processed)
+            // should not retry or pollute failed_jobs.
+            if ($e instanceof \DomainException) {
+                return;
+            }
+
+            if (str_contains($e->getMessage(), 'Contact not found')) {
+                return;
             }
 
             throw $e;

@@ -14,7 +14,7 @@ class ProcessScoreUseCase
     ) {
     }
 
-    public function execute(int $contactId): void
+    public function execute(int $contactId): Contact
     {
         $contact = $this->repository->findById($contactId);
 
@@ -33,6 +33,8 @@ class ProcessScoreUseCase
         }
 
         $this->repository->save($contact);
+
+        return $contact;
     }
 
     /**
