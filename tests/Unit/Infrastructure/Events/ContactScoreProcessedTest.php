@@ -5,6 +5,12 @@ namespace Tests\Unit\Infrastructure\Events;
 use App\Events\ContactScoreProcessed;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Unit tests for ContactScoreProcessed event.
+ *
+ * Verifies event data construction via constructor and
+ * broadcast channel name derived from contact ID.
+ */
 class ContactScoreProcessedTest extends TestCase
 {
     public function test_event_creates_with_correct_data(): void
