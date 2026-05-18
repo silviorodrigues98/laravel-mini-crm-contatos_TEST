@@ -119,5 +119,17 @@ None - plan executed exactly as written.
 
 ---
 
+## Self-Check: PASSED
+
+All claims verified:
+- ✅ app/Events/ContactScoreProcessed.php exists
+- ✅ app/Listeners/LogContactScoreProcessed.php exists
+- ✅ routes/channels.php exists
+- ✅ config/reverb.php and config/broadcasting.php exist
+- ✅ All 5 new/modified PHP files pass lint
+- ✅ 3 plan-related commits present (feat + feat + docs)
+
+---
+
 *Phase: 03-events-broadcasting-polish*
 *Completed: 2026-05-18*
