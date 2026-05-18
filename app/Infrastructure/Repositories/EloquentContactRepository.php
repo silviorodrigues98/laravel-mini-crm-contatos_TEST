@@ -6,7 +6,6 @@ use App\Infrastructure\Models\Contact as ContactModel;
 use App\Infrastructure\Persistence\Mappers\ContactMapper;
 use Domain\Entities\Contact;
 use Domain\Repositories\ContactRepositoryInterface;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class EloquentContactRepository implements ContactRepositoryInterface
 {
@@ -39,13 +38,14 @@ class EloquentContactRepository implements ContactRepositoryInterface
         return $this->mapper->toDomain($model);
     }
 
-    public function findAll(int $perPage = 15, int $page = 1): LengthAwarePaginator
+    /** @return Contact[] */
+    public function findAll(int $perPage = 15, int $page = 1): array
     {
         $paginator = $this->model->newQuery()->paginate(perPage: $perPage, page: $page);
 
-        $paginator->getCollection()->transform(fn (ContactModel $model) => $this->mapper->toDomain($model));
-
-        return $paginator;
+        return collect($paginator->items())
+            ->map(fn (ContactModel $model) => $this->mapper->toDomain($model))
+            ->toArray();
     }
 
     public function delete(int $id): void

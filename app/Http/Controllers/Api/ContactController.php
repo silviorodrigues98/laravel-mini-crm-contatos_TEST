@@ -7,11 +7,13 @@ use App\Http\Requests\StoreContactRequest;
 use App\Http\Requests\UpdateContactRequest;
 use App\Http\Resources\ContactCollection;
 use App\Http\Resources\ContactResource;
+use App\Infrastructure\Models\Contact as ContactModel;
 use Application\UseCases\CreateContactUseCase;
 use Application\UseCases\DeleteContactUseCase;
 use Application\UseCases\GetContactUseCase;
 use Application\UseCases\ListContactsUseCase;
 use Application\UseCases\UpdateContactUseCase;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -42,12 +44,25 @@ class ContactController extends Controller
 
     public function index(Request $request): ContactCollection
     {
+        $perPage = $request->integer('per_page', 15);
+        $page = $request->integer('page', 1);
+
         $contacts = $this->listContacts->execute(
-            perPage: $request->integer('per_page', 15),
-            page: $request->integer('page', 1),
+            perPage: $perPage,
+            page: $page,
         );
 
-        return new ContactCollection($contacts);
+        $total = ContactModel::count();
+
+        $paginator = new LengthAwarePaginator(
+            $contacts,
+            $total,
+            $perPage,
+            $page,
+            ['path' => LengthAwarePaginator::resolveCurrentPath()]
+        );
+
+        return new ContactCollection($paginator);
     }
 
     public function show(int $id): JsonResponse

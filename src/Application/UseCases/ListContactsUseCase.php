@@ -2,8 +2,8 @@
 
 namespace Application\UseCases;
 
+use Domain\Entities\Contact;
 use Domain\Repositories\ContactRepositoryInterface;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ListContactsUseCase
 {
@@ -12,7 +12,8 @@ class ListContactsUseCase
     ) {
     }
 
-    public function execute(int $perPage = 15, int $page = 1): LengthAwarePaginator
+    /** @return Contact[] */
+    public function execute(int $perPage = 15, int $page = 1): array
     {
         return $this->repository->findAll($perPage, $page);
     }
