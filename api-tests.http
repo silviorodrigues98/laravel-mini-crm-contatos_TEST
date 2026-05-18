@@ -1,0 +1,224 @@
+### ============================================================
+### Mini CRM de Contatos — API Tests
+### ============================================================
+### Prerequisites:
+###   1. Run `php artisan migrate:fresh --seed`
+###   2. Run `php artisan serve` (starts at http://localhost:8000)
+###   3. For score processing to actually execute:
+###      Run `php artisan queue:work` in another terminal
+###      (queue driver is "database" — jobs persist to DB)
+###
+### How to use: Click "Send Request" above any request block.
+### Variables (@baseUrl) set below — change port if needed.
+
+@baseUrl = http://localhost:8000/api
+
+### ============================================================
+### CONTACTS — CRUD
+### ============================================================
+
+### ----------------------------------------------------------
+### 1. List Contacts (empty initially)
+### Returns 200 with paginated list (data: [], meta: {...})
+### ----------------------------------------------------------
+
+GET {{baseUrl}}/contacts
+
+### ----------------------------------------------------------
+### 2. Create Contact — minimum valid payload
+### Returns 201
+### Expected: status = "pending", score = 0
+### ----------------------------------------------------------
+
+POST {{baseUrl}}/contacts
+Content-Type: application/json
+
+{
+    "name": "João Silva",
+    "email": "joao@gmail.com",
+    "phone": "11988888888"
+}
+
+### ----------------------------------------------------------
+### 3. Create Contact — corporate email (will score higher)
+### Returns 201
+### This contact: corporate (+20) + multi-word (+10) + SP DDD (+20) = score 50
+### ----------------------------------------------------------
+
+POST {{baseUrl}}/contacts
+Content-Type: application/json
+
+{
+    "name": "Maria Souza",
+    "email": "maria@company.com",
+    "phone": "11999999999"
+}
+
+### ----------------------------------------------------------
+### 4. Create Contact — .br email + other state DDD
+### Returns 201
+### This contact: .br TLD (+10) + corporate (+20) + multi-word (+10) + other DDD (+10) = 50
+### ----------------------------------------------------------
+
+POST {{baseUrl}}/contacts
+Content-Type: application/json
+
+{
+    "name": "Ana Oliveira",
+    "email": "ana@empresa.com.br",
+    "phone": "21988888888"
+}
+
+### ----------------------------------------------------------
+### 5. Create Contact — single name + invalid DDD
+### Returns 201
+### This contact: single word name (+0) + DDD < 11 (+0) = score 0
+### ----------------------------------------------------------
+
+POST {{baseUrl}}/contacts
+Content-Type: application/json
+
+{
+    "name": "Carlos",
+    "email": "carlos@hotmail.com",
+    "phone": "10999999999"
+}
+
+### ----------------------------------------------------------
+### 6. Create Contact — validation errors
+### Returns 422 with validation messages
+### ----------------------------------------------------------
+
+POST {{baseUrl}}/contacts
+Content-Type: application/json
+
+{
+    "name": "",
+    "email": "invalid-email",
+    "phone": ""
+}
+
+### ----------------------------------------------------------
+### 7. Create Contact — duplicate email
+### Returns 422
+### ----------------------------------------------------------
+
+POST {{baseUrl}}/contacts
+Content-Type: application/json
+
+{
+    "name": "Jose Duplicate",
+    "email": "joao@gmail.com",
+    "phone": "21977777777"
+}
+
+### ----------------------------------------------------------
+### 8. Show a Contact (use id from a created contact)
+### Returns 200 with full contact JSON
+### ----------------------------------------------------------
+
+GET {{baseUrl}}/contacts/1
+
+### ----------------------------------------------------------
+### 9. Show non-existent Contact
+### Returns 404
+### ----------------------------------------------------------
+
+GET {{baseUrl}}/contacts/9999
+
+### ----------------------------------------------------------
+### 10. Update Contact
+### Returns 200 with updated data
+### ----------------------------------------------------------
+
+PUT {{baseUrl}}/contacts/1
+Content-Type: application/json
+
+{
+    "name": "João Souza Updated",
+    "phone": "21988888888"
+}
+
+### ----------------------------------------------------------
+### 11. Update Contact — validation errors
+### Returns 422
+### ----------------------------------------------------------
+
+PUT {{baseUrl}}/contacts/1
+Content-Type: application/json
+
+{
+    "name": "",
+    "email": "bad-email"
+}
+
+### ----------------------------------------------------------
+### 12. Delete Contact (soft delete)
+### Returns 204
+### After this, GET /contacts/1 returns 404
+### ----------------------------------------------------------
+
+DELETE {{baseUrl}}/contacts/1
+
+### ============================================================
+### SCORE PROCESSING
+### ============================================================
+
+### ----------------------------------------------------------
+### 13. Trigger Score Processing
+### Returns 202 (accepted — job queued)
+### ----------------------------------------------------------
+
+POST {{baseUrl}}/contacts/2/process-score
+
+### ----------------------------------------------------------
+### 14. Trigger Score Processing — non-existent contact
+### Returns 404
+### ----------------------------------------------------------
+
+POST {{baseUrl}}/contacts/9999/process-score
+
+### ----------------------------------------------------------
+### 15. Verify Score After Processing
+### If queue worker is running (php artisan queue:work),
+### the contact's status should be "active" and score calculated.
+### Contact 2 (Maria Souza): corporate +20, multi-word +10, SP DDD +20 = 50
+### Contact 3 (Ana Oliveira): corporate +20, .br TLD +10, multi-word +10, other DDD +10 = 50
+### Contact 4 (Carlos): hotmail (+0), single word (+0), DDD 10 (+0) = 0
+### ----------------------------------------------------------
+
+GET {{baseUrl}}/contacts/2
+GET {{baseUrl}}/contacts/3
+GET {{baseUrl}}/contacts/4
+
+### ----------------------------------------------------------
+### 16. Trigger Score Processing — already processed contact
+### Returns 202 (job queued). Job will fail because
+### status machine rejects "active → processing" transition.
+### ----------------------------------------------------------
+
+POST {{baseUrl}}/contacts/2/process-score
+
+### ============================================================
+### SCORING RULES REFERENCE
+### ============================================================
+### Email Domain:
+###   - Corporate (not gmail/hotmail/yahoo) → +20
+###   - .br TLD → +10
+###
+### Name Length:
+###   - Multi-word (≥2 words) → +10
+###   - Single word → 0
+###
+### Phone DDD:
+###   - 11–19 (São Paulo) → +20
+###   - 20+ (other state) → +10
+###   - < 11 (invalid) → 0
+###
+### Status Machine:
+###   pending → processing → active | failed
+###
+### Queue:
+###   - Driver: database
+###   - Job sleeps 1-2 seconds to simulate work
+###   - $tries = 1 (no infinite retries)

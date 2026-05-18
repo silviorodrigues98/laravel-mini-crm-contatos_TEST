@@ -6,7 +6,7 @@
 |---|-------|------|--------------|------------------|
 | 1 | Domain Foundation & CRUD | Implement core domain entities, VOs, repository interfaces, migrations, and full CRUD endpoints | CONT-01–05, ARCH-01–10, TEST-04 | 7 |
 | 2 | Score Processing | Implement async score calculation with Strategy pattern, queue job, and processing trigger | SCORE-01–06, CALC-01–05, TEST-01–03, TEST-05 | 5 |
-| 3 | Events, Broadcasting & Polish | Implement domain events, log listener, Reverb broadcast, HTML example, and final test suite wiring | EVENT-01–04, ARCH-08, TEST-06 | 6 |
+| 3 | Events, Broadcasting & Polish | 2/2 | Complete    | 2026-05-18 |
 
 ---
 
@@ -97,11 +97,11 @@ Plans:
 5. Full test suite passes
 6. Observer normalizes phone on `saving`
 
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
-- [ ] 03-01-PLAN.md — Event Broadcasting Pipeline: Reverb, Event, Listener, Use Case + Job Modifications
-- [ ] 03-02-PLAN.md — Tests & Documentation: Event Tests, Observer Tests, README, Full Suite
+- [x] 03-01-PLAN.md — Event Broadcasting Pipeline: Reverb, Event, Listener, Use Case + Job Modifications
+- [x] 03-02-PLAN.md — Tests & Documentation: Event Tests, Observer Tests, README, Full Suite
 
 ### Phase 3: Events, Broadcasting & Polish
 **Goal:** Wire domain events, log listener, Reverb broadcast, HTML/JS example, and finalize test suite.
