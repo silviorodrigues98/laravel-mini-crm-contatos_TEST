@@ -1,191 +1,58 @@
-# Mini CRM de Contatos
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-API REST para gerenciamento de contatos com processamento assíncrono de score e atualizações em tempo real via WebSocket.
+<p align="center">
+<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
-Construído como desafio técnico demonstrando **DDD**, **SOLID**, **TDD** e fluência no ecossistema Laravel.
+## About Laravel
 
-> **Documento original do desafio:** [`docs/original/README.md`](docs/original/README.md)
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
----
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-## Stack
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-| Camada     | Tecnologia                        |
-|------------|-----------------------------------|
-| Backend    | Laravel 11+                       |
-| Banco      | MySQL / SQLite                    |
-| Fila       | Redis                             |
-| WebSocket  | Laravel Reverb                    |
-| Testes     | PHPUnit (Feature + Unit)          |
+## Learning Laravel
 
-## Setup
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-```bash
-# 1. Clonar
-git clone <repo-url>
-cd laravel-mini-crm-contatos
+In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-# 2. Instalar dependências
-composer install
+You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
 
-# 3. Configurar ambiente
-cp .env.example .env
-# Ajuste DB_CONNECTION, REDIS_HOST, etc. conforme necessário
+## Agentic Development
 
-# 4. Gerar chave
-php artisan key:generate
-
-# 5. Rodar migrations
-php artisan migrate
-
-# 6. (Opcional) Seed
-php artisan db:seed
-```
-
-## Arquitetura
-
-O projeto segue os princípios de **Domain-Driven Design** com separação em três camadas:
-
-```
-src/
-├── Domain/          # Entidades, Value Objects, interfaces de repositório
-│   ├── Entities/
-│   ├── ValueObjects/
-│   └── Repositories/
-├── Application/     # Use Cases / Actions
-│   └── UseCases/
-app/
-└── Infrastructure/  # Laravel: Controllers, Eloquent, Jobs, Events, Listeners
-    ├── Http/
-    │   ├── Controllers/
-    │   ├── Requests/
-    │   └── Resources/
-    ├── Repositories/
-    ├── Jobs/
-    ├── Events/
-    ├── Listeners/
-    └── Observers/
-```
-
-### Princípios
-
-- **Domain Layer** é 100% agnóstica ao framework — sem facades, sem ORM
-- **Use Cases** recebem interfaces de repositório por injeção de dependência
-- **Laravel Service Container** faz o binding das implementações concretas (Eloquent)
-- **Value Objects** para Email, Phone e Status (nunca strings cruas na entidade)
-- **Strategy Pattern** no cálculo do score para facilitar extensão
-- **Form Requests** para validação, **API Resources** para saída JSON
-- **Observer** para normalização do telefone no evento `saving`
-
-## Endpoints
-
-### Contatos (CRUD)
-
-| Método | Rota                  | Descrição                |
-|--------|-----------------------|--------------------------|
-| POST   | `/api/contacts`       | Criar contato            |
-| GET    | `/api/contacts`       | Listar contatos (paginado) |
-| GET    | `/api/contacts/{id}`  | Exibir contato           |
-| PUT    | `/api/contacts/{id}`  | Atualizar contato        |
-| DELETE | `/api/contacts/{id}`  | Excluir contato (soft)   |
-
-### Processamento de Score
-
-| Método | Rota                             | Descrição                              |
-|--------|----------------------------------|----------------------------------------|
-| POST   | `/api/contacts/{id}/process-score` | Dispara processamento assíncrono do score |
-
-### Regras de Cálculo do Score
-
-- **E-mail**: domínios corporativos (exceto gmail, hotmail, yahoo) → +20 pontos
-- **E-mail**: terminação `.br` → +10 pontos
-- **Nome**: mais de uma palavra → +10 pontos
-- **Telefone**: DDD de São Paulo (11–19) → +20 pontos
-- **Telefone**: DDD de outros estados → +10 pontos
-
-### Fluxo de Status
-
-```
-pending → processing → active (sucesso)
-                      → failed (falha)
-```
-
-## Testes
+Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
 
 ```bash
-# Suite completa (Unit + Feature)
-php artisan test
+composer require laravel/boost --dev
 
-# Classe específica
-php artisan test --filter=NomeDaClasse
-
-# Método específico
-php artisan test --filter="nome_do_metodo"
+php artisan boost:install
 ```
 
-## Fila (Redis)
+Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
 
-```bash
-# Processar a fila
-php artisan queue:work
+## Contributing
 
-# Em ambiente de desenvolvimento com múltiplos jobs
-php artisan queue:work --tries=3
-```
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## WebSocket (Reverb)
+## Code of Conduct
 
-```bash
-# Iniciar servidor Reverb
-php artisan reverb:start
-```
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-### Exemplo de escuta no frontend
+## Security Vulnerabilities
 
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Mini CRM — Listener</title>
-</head>
-<body>
-    <div id="status"></div>
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-    <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1/dist/echo.iife.js"></script>
-    <script>
-        const echo = new Echo({
-            broadcaster: 'reverb',
-            key: 'sua-chave',
-            wsHost: window.location.hostname,
-            wsPort: 8080,
-            forceTLS: false,
-            enabledTransports: ['ws', 'wss'],
-        });
+## License
 
-        const contactId = 1; // substituir pelo ID desejado
-        echo.channel(`contacts.${contactId}`)
-            .listen('ContactScoreProcessed', (e) => {
-                document.getElementById('status').innerHTML = `
-                    <p>Score atualizado: ${e.contact.score}</p>
-                    <p>Status: ${e.contact.status}</p>
-                `;
-            });
-    </script>
-</body>
-</html>
-```
-
-## Comandos Úteis
-
-| Ação                          | Comando                          |
-|-------------------------------|----------------------------------|
-| Migrar                        | `php artisan migrate`            |
-| Resetar banco + seed          | `php artisan migrate:fresh --seed` |
-| Processar fila                | `php artisan queue:work`         |
-| Iniciar Reverb                | `php artisan reverb:start`       |
-| Rodar testes                  | `php artisan test`               |
-| Cache de rotas                | `php artisan route:cache`        |
-
----
-
-*Projeto baseado no desafio técnico descrito em [`docs/original/README.md`](docs/original/README.md).*
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

@@ -22,9 +22,17 @@ class UpdateContactUseCase
             return null;
         }
 
-        $contact->updateName($name);
-        $contact->updateEmail(new Email($email));
-        $contact->changePhone(new Phone($phone));
+        if ($name !== null) {
+            $contact->updateName($name);
+        }
+
+        if ($email !== null) {
+            $contact->updateEmail(new Email($email));
+        }
+
+        if ($phone !== null) {
+            $contact->changePhone(new Phone($phone));
+        }
 
         $this->repository->save($contact);
 

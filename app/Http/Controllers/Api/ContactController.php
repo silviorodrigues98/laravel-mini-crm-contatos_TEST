@@ -84,9 +84,9 @@ class ContactController extends Controller
 
         $contact = $this->updateContact->execute(
             $id,
-            $data['name'],
-            $data['email'],
-            $data['phone'],
+            $data['name'] ?? null,
+            $data['email'] ?? null,
+            $data['phone'] ?? null,
         );
 
         if ($contact === null) {
