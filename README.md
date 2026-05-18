@@ -1,5 +1,8 @@
 # Mini CRM de Contatos
 
+> **Este projeto foi construído usando Spec Driven Development com agentes de IA.**
+> Arquiteto e orquestrador: **[silviorodrigues98](https://github.com/silviorodrigues98)**.
+
 Uma API REST para gerenciamento de contatos com cálculo de score assíncrono e atualizações em tempo real via WebSocket. Os contatos passam pelos status `pending → processing → active|failed` enquanto o score é calculado com base em regras de domínio (domínio de email, tamanho do nome, DDD do telefone).
 
 Construído como desafio técnico demonstrando DDD, SOLID e TDD no ecossistema Laravel.
