@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Events\ContactScoreProcessed;
 use App\Infrastructure\Models\Contact;
 use App\Jobs\ProcessContactScoreJob;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
@@ -58,5 +60,26 @@ class ScoreProcessingTest extends TestCase
             'status' => 'active',
             'score' => 50,
         ]);
+    }
+
+    public function test_score_processing_dispatches_contact_score_processed_event(): void
+    {
+        Event::fake([ContactScoreProcessed::class]);
+
+        $contact = Contact::factory()->create([
+            'name' => 'John Doe',
+            'email' => 'john@company.com',
+            'phone' => '11999999999',
+            'status' => 'pending',
+        ]);
+
+        $this->postJson(self::BASE_URL . '/' . $contact->id . '/process-score');
+
+        Event::assertDispatched(ContactScoreProcessed::class, function ($event) use ($contact) {
+            return $event->contactId === $contact->id
+                && $event->email === $contact->email
+                && $event->score === 50
+                && $event->status === 'active';
+        });
     }
 }

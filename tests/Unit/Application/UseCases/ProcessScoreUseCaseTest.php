@@ -57,4 +57,25 @@ class ProcessScoreUseCaseTest extends TestCase
         $this->assertSame(0, $contact->score()->value);
         $this->assertNotNull($contact->processedAt());
     }
+
+    public function test_execute_returns_contact(): void
+    {
+        $contact = Contact::create(
+            'John Doe',
+            new Email('john@company.com'),
+            new Phone('11999999999')
+        );
+
+        $repository = $this->createMock(ContactRepositoryInterface::class);
+        $repository->method('findById')->with(1)->willReturn($contact);
+
+        $calculator = $this->createMock(ScoreCalculator::class);
+        $calculator->method('calculate')->with($contact)->willReturn(new Score(60));
+
+        $useCase = new ProcessScoreUseCase($repository, $calculator);
+        $result = $useCase->execute(1);
+
+        $this->assertInstanceOf(Contact::class, $result);
+        $this->assertSame(60, $result->score()->value);
+    }
 }
